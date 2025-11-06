@@ -27,7 +27,8 @@ body {
   padding: 24px;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  width: 320px;
+  width: 360px; /* slightly wider to fit date input */
+  text-align: center;
 }
 
 /* Title */
@@ -39,17 +40,25 @@ h1 {
 /* Todo Form */
 .todo-form {
   display: flex;
-  gap: 6px;
+  align-items: center;
   justify-content: space-between;
+  gap: 6px;
   margin-bottom: 1rem;
+  flex-wrap: wrap; /* makes responsive on small screens */
 }
 
-.todo-form input[type="text"] {
+.todo-form input[type="text"],
+.todo-form input[type="date"] {
   flex: 1;
   padding: 10px;
   border: 1px solid var(--gray-border);
   border-radius: 4px;
   font-size: 0.95rem;
+  box-sizing: border-box;
+}
+
+.todo-form input[type="date"] {
+  max-width: 130px; /* keeps date input smaller */
 }
 
 .todo-form button {
@@ -60,6 +69,7 @@ h1 {
   border-radius: 4px;
   cursor: pointer;
   transition: background 0.2s ease;
+  white-space: nowrap;
 }
 
 .todo-form button:hover {
@@ -100,4 +110,17 @@ h1 {
 
 .todo-item button:hover {
   background: #c82333;
+}
+
+/* Task Counter */
+.task-counter {
+  margin-top: 1rem;
+  text-align: center;
+  font-size: 0.95rem;
+  color: var(--text-color);
+}
+
+.task-counter span {
+  font-weight: bold;
+  color: var(--green);
 }

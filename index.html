@@ -20,11 +20,22 @@
             placeholder="Enter a new todo"
             aria-label="Todo input field"
           />
+          <input
+            type="date"
+            class="todo-date"
+            aria-label="Due date picker"
+          />
           <button type="submit">Add Todo</button>
         </form>
 
         <!-- Todo List -->
         <ul class="todo-list"></ul>
+
+        <!-- Task Counter -->
+        <div class="task-counter">
+          <p>Total tasks: <span id="total-count">0</span></p>
+          <p>Completed: <span id="completed-count">0</span></p>
+        </div>
       </div>
     </div>
 
