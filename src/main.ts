@@ -9,24 +9,21 @@ interface Todo {
 
 let todos: Todo[] = []
 
-// DOM Elements
+// DOM elements
 const todoInput = document.querySelector('.todo-input') as HTMLInputElement
 const todoDate = document.querySelector('.todo-date') as HTMLInputElement
 const todoForm = document.querySelector('.todo-form') as HTMLFormElement
 const todoList = document.querySelector('.todo-list') as HTMLUListElement
-const totalTasks = document.getElementById('total-tasks') as HTMLElement
-const completedTasks = document.getElementById('completed-tasks') as HTMLElement
-const progressBar = document.querySelector('.progress-bar') as HTMLElement
-const progressText = document.querySelector('.progress-text') as HTMLElement
-const colorPicker = document.querySelector('#bg-color') as HTMLInputElement | null
+const totalCount = document.querySelector('#total-count') as HTMLElement
+const completedCount = document.querySelector('#completed-count') as HTMLElement
 
-//  Add a new todo
+// Function to add a new todo
 const addTodo = (text: string, dueDate?: string): void => {
   const newTodo: Todo = {
     id: Date.now(),
     text,
     completed: false,
-    dueDate,
+    dueDate
   }
   todos.push(newTodo)
   renderTodos()
@@ -56,44 +53,48 @@ const renderTodos = (): void => {
     const li = document.createElement('li')
     li.className = 'todo-item'
 
-    // Color-coding based on due date
+    // Determine color based on due date
+    let dueColor = ''
     if (todo.dueDate) {
+      const today = new Date()
       const due = new Date(todo.dueDate)
-      due.setHours(0, 0, 0, 0)
-      const diffDays = Math.floor((due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+      const diffDays = Math.ceil((due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
 
       if (diffDays < 0) {
-        li.style.backgroundColor = '#ffcccc' // 🔴 overdue
+        dueColor = 'red' // Overdue
       } else if (diffDays === 0) {
-        li.style.backgroundColor = '#ffeeba' // 🟠 due today
+        dueColor = 'orange' // Today
       } else if (diffDays === 1) {
-        li.style.backgroundColor = '#d4edda' // 🟢 due tomorrow
+        dueColor = 'green' // Tomorrow
       } else {
-        li.style.backgroundColor = '#e2f0cb' // 💚 future
+        dueColor = 'lightgreen' // Future
       }
     }
 
     li.innerHTML = `
       <input type="checkbox" ${todo.completed ? 'checked' : ''}>
-      <span style="text-decoration:${todo.completed ? 'line-through' : 'none'};">
+      <span 
+        style="text-decoration:${todo.completed ? 'line-through' : 'none'}; color:${dueColor}">
         ${todo.text} ${todo.dueDate ? `(Due: ${todo.dueDate})` : ''}
       </span>
       <button class="remove-btn">Remove</button>
     `
 
+    // Checkbox functionality
     const checkbox = li.querySelector('input') as HTMLInputElement
     checkbox.addEventListener('change', () => {
       todo.completed = checkbox.checked
       renderTodos()
     })
 
+    // Remove button
     const removeButton = li.querySelector('.remove-btn') as HTMLButtonElement
     removeButton.addEventListener('click', () => removeTodo(todo.id))
 
     todoList.appendChild(li)
   })
 
-  updateProgress()
+  updateTaskCounter()
 }
 
 //  Remove a todo
@@ -102,41 +103,14 @@ const removeTodo = (id: number): void => {
   renderTodos()
 }
 
-//  Update progress bar and counters
-const updateProgress = (): void => {
+// Function to update the task counter
+const updateTaskCounter = (): void => {
   const total = todos.length
-  const completed = todos.filter((t) => t.completed).length
-  const percentage = total ? Math.round((completed / total) * 100) : 0
+  const completed = todos.filter((todo) => todo.completed).length
 
-  totalTasks.textContent = total.toString()
-  completedTasks.textContent = completed.toString()
-  progressBar.style.width = `${percentage}%`
-  progressText.textContent = `${percentage}%`
-
-  // Dynamic color based on progress
-  if (percentage < 50) {
-    progressBar.style.backgroundColor = '#dc3545' // red
-  } else if (percentage < 100) {
-    progressBar.style.backgroundColor = '#ffc107' // yellow
-  } else {
-    progressBar.style.backgroundColor = '#28a745' // green
-  }
+  totalCount.textContent = total.toString()
+  completedCount.textContent = completed.toString()
 }
 
-// Handle background color change (changes full page)
-if (colorPicker) {
-  // Load saved color if exists
-  const savedColor = localStorage.getItem('bgColor')
-  if (savedColor) {
-    document.body.style.backgroundColor = savedColor
-    colorPicker.value = savedColor
-  }
-
-  colorPicker.addEventListener('input', () => {
-    document.body.style.backgroundColor = colorPicker.value
-    localStorage.setItem('bgColor', colorPicker.value) // saves choice
-  })
-}
-
-//  Initial render
+// Initial render
 renderTodos()
