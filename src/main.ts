@@ -9,7 +9,7 @@ interface Todo {
 
 let todos: Todo[] = []
 
-// Elements
+// DOM Elements
 const todoInput = document.querySelector('.todo-input') as HTMLInputElement
 const todoDate = document.querySelector('.todo-date') as HTMLInputElement
 const todoForm = document.querySelector('.todo-form') as HTMLFormElement
@@ -18,16 +18,15 @@ const totalTasks = document.getElementById('total-tasks') as HTMLElement
 const completedTasks = document.getElementById('completed-tasks') as HTMLElement
 const progressBar = document.querySelector('.progress-bar') as HTMLElement
 const progressText = document.querySelector('.progress-text') as HTMLElement
-const colorPicker = document.querySelector('#bg-color') as HTMLInputElement
-const container = document.querySelector('.container') as HTMLElement
+const colorPicker = document.querySelector('#bg-color') as HTMLInputElement | null
 
-// Add new todo
+//  Add a new todo
 const addTodo = (text: string, dueDate?: string): void => {
   const newTodo: Todo = {
     id: Date.now(),
     text,
     completed: false,
-    dueDate
+    dueDate,
   }
   todos.push(newTodo)
   renderTodos()
@@ -46,7 +45,7 @@ todoForm.addEventListener('submit', (event: Event): void => {
   }
 })
 
-// Render todos with due-date color-coding
+//  Render todos with due-date color coding
 const renderTodos = (): void => {
   todoList.innerHTML = ''
 
@@ -66,9 +65,9 @@ const renderTodos = (): void => {
       if (diffDays < 0) {
         li.style.backgroundColor = '#ffcccc' // 🔴 overdue
       } else if (diffDays === 0) {
-        li.style.backgroundColor = '#ffeeba' // 🟠 today
+        li.style.backgroundColor = '#ffeeba' // 🟠 due today
       } else if (diffDays === 1) {
-        li.style.backgroundColor = '#d4edda' // 🟢 tomorrow
+        li.style.backgroundColor = '#d4edda' // 🟢 due tomorrow
       } else {
         li.style.backgroundColor = '#e2f0cb' // 💚 future
       }
@@ -97,13 +96,13 @@ const renderTodos = (): void => {
   updateProgress()
 }
 
-// Remove todo
+//  Remove a todo
 const removeTodo = (id: number): void => {
   todos = todos.filter((todo) => todo.id !== id)
   renderTodos()
 }
 
-// Update progress and counters
+//  Update progress bar and counters
 const updateProgress = (): void => {
   const total = todos.length
   const completed = todos.filter((t) => t.completed).length
@@ -124,12 +123,20 @@ const updateProgress = (): void => {
   }
 }
 
-// Handle background color change
+// Handle background color change (changes full page)
 if (colorPicker) {
+  // Load saved color if exists
+  const savedColor = localStorage.getItem('bgColor')
+  if (savedColor) {
+    document.body.style.backgroundColor = savedColor
+    colorPicker.value = savedColor
+  }
+
   colorPicker.addEventListener('input', () => {
-    container.style.backgroundColor = colorPicker.value
+    document.body.style.backgroundColor = colorPicker.value
+    localStorage.setItem('bgColor', colorPicker.value) // saves choice
   })
 }
 
-// Initial render
+//  Initial render
 renderTodos()
