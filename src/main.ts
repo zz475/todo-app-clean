@@ -42,39 +42,38 @@ todoForm.addEventListener('submit', (event: Event): void => {
   }
 })
 
-//  Render todos with due-date color coding
+// Render todos with due-date color coding
 const renderTodos = (): void => {
   todoList.innerHTML = ''
-
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
 
   todos.forEach((todo) => {
     const li = document.createElement('li')
     li.className = 'todo-item'
 
-    // Determine color based on due date
-    let dueColor = ''
+    // Determine color class based on due date
+    let colorClass = ''
     if (todo.dueDate) {
       const today = new Date()
       const due = new Date(todo.dueDate)
-      const diffDays = Math.ceil((due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+      today.setHours(0, 0, 0, 0)
+      due.setHours(0, 0, 0, 0)
+
+      const diffDays = Math.floor((due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
 
       if (diffDays < 0) {
-        dueColor = 'red' // Overdue
+        colorClass = 'overdue' // red
       } else if (diffDays === 0) {
-        dueColor = 'orange' // Today
+        colorClass = 'today' // orange
       } else if (diffDays === 1) {
-        dueColor = 'green' // Tomorrow
+        colorClass = 'tomorrow' // green
       } else {
-        dueColor = 'lightgreen' // Future
+        colorClass = 'future' // light green
       }
     }
 
     li.innerHTML = `
       <input type="checkbox" ${todo.completed ? 'checked' : ''}>
-      <span 
-        style="text-decoration:${todo.completed ? 'line-through' : 'none'}; color:${dueColor}">
+      <span class="todo-text ${colorClass}" style="text-decoration:${todo.completed ? 'line-through' : 'none'};">
         ${todo.text} ${todo.dueDate ? `(Due: ${todo.dueDate})` : ''}
       </span>
       <button class="remove-btn">Remove</button>
@@ -97,7 +96,7 @@ const renderTodos = (): void => {
   updateTaskCounter()
 }
 
-//  Remove a todo
+// Remove a todo
 const removeTodo = (id: number): void => {
   todos = todos.filter((todo) => todo.id !== id)
   renderTodos()

@@ -112,6 +112,27 @@ h1 {
   background: #c82333;
 }
 
+/* === Due date color coding === */
+.todo-text.overdue {
+  color: red;
+  font-weight: 600;
+}
+
+.todo-text.today {
+  color: orange;
+  font-weight: 600;
+}
+
+.todo-text.tomorrow {
+  color: green;
+  font-weight: 600;
+}
+
+.todo-text.future {
+  color: limegreen;
+  font-weight: 600;
+}
+
 /* Task Counter */
 .task-counter {
   margin-top: 1rem;
