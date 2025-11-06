@@ -14,17 +14,33 @@
 
         <!-- Todo Input Form -->
         <form class="todo-form">
-          <input
-            type="text"
-            class="todo-input"
-            placeholder="Enter a new todo"
-            aria-label="Todo input field"
-          />
-          <button type="submit">Add Todo</button>
+          <div class="form-row">
+            <input
+              type="text"
+              class="todo-input"
+              placeholder="Enter a new todo"
+              aria-label="Todo input field"
+            />
+            <input type="date" class="todo-date" />
+            <button type="submit" class="add-btn">Add Todo</button>
+          </div>
         </form>
 
         <!-- Todo List -->
         <ul class="todo-list"></ul>
+
+        <!-- Progress Section -->
+        <div class="progress-section">
+          <label for="progress">Progress:</label>
+          <div class="progress-container">
+            <div class="progress-bar"></div>
+          </div>
+          <p class="progress-text">0%</p>
+        </div>
+
+        <!-- Task Counters -->
+        <p>Total tasks: <span id="total-tasks">0</span></p>
+        <p>Completed: <span id="completed-tasks">0</span></p>
       </div>
     </div>
 

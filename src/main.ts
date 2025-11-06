@@ -4,20 +4,30 @@ interface Todo {
   id: number
   text: string
   completed: boolean
+  dueDate?: string
 }
 
 let todos: Todo[] = []
 
+// Elements
 const todoInput = document.querySelector('.todo-input') as HTMLInputElement
+const todoDate = document.querySelector('.todo-date') as HTMLInputElement
 const todoForm = document.querySelector('.todo-form') as HTMLFormElement
 const todoList = document.querySelector('.todo-list') as HTMLUListElement
+const totalTasks = document.getElementById('total-tasks') as HTMLElement
+const completedTasks = document.getElementById('completed-tasks') as HTMLElement
+const progressBar = document.querySelector('.progress-bar') as HTMLElement
+const progressText = document.querySelector('.progress-text') as HTMLElement
+const colorPicker = document.querySelector('#bg-color') as HTMLInputElement
+const container = document.querySelector('.container') as HTMLElement
 
-// Function to add a new todo
-const addTodo = (text: string): void => {
+// Add new todo
+const addTodo = (text: string, dueDate?: string): void => {
   const newTodo: Todo = {
     id: Date.now(),
     text,
-    completed: false
+    completed: false,
+    dueDate
   }
   todos.push(newTodo)
   renderTodos()
@@ -27,25 +37,47 @@ const addTodo = (text: string): void => {
 todoForm.addEventListener('submit', (event: Event): void => {
   event.preventDefault()
   const text = todoInput.value.trim()
+  const dueDate = todoDate.value
 
   if (text !== '') {
-    addTodo(text)
+    addTodo(text, dueDate)
     todoInput.value = ''
+    todoDate.value = ''
   }
 })
 
-// Function to display todos
+// Render todos with due-date color-coding
 const renderTodos = (): void => {
   todoList.innerHTML = ''
+
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
 
   todos.forEach((todo) => {
     const li = document.createElement('li')
     li.className = 'todo-item'
 
+    // Color-coding based on due date
+    if (todo.dueDate) {
+      const due = new Date(todo.dueDate)
+      due.setHours(0, 0, 0, 0)
+      const diffDays = Math.floor((due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+
+      if (diffDays < 0) {
+        li.style.backgroundColor = '#ffcccc' // 🔴 overdue
+      } else if (diffDays === 0) {
+        li.style.backgroundColor = '#ffeeba' // 🟠 today
+      } else if (diffDays === 1) {
+        li.style.backgroundColor = '#d4edda' // 🟢 tomorrow
+      } else {
+        li.style.backgroundColor = '#e2f0cb' // 💚 future
+      }
+    }
+
     li.innerHTML = `
       <input type="checkbox" ${todo.completed ? 'checked' : ''}>
       <span style="text-decoration:${todo.completed ? 'line-through' : 'none'};">
-        ${todo.text}
+        ${todo.text} ${todo.dueDate ? `(Due: ${todo.dueDate})` : ''}
       </span>
       <button class="remove-btn">Remove</button>
     `
@@ -61,14 +93,43 @@ const renderTodos = (): void => {
 
     todoList.appendChild(li)
   })
+
+  updateProgress()
 }
 
-// Function to remove a todo
+// Remove todo
 const removeTodo = (id: number): void => {
   todos = todos.filter((todo) => todo.id !== id)
   renderTodos()
 }
 
+// Update progress and counters
+const updateProgress = (): void => {
+  const total = todos.length
+  const completed = todos.filter((t) => t.completed).length
+  const percentage = total ? Math.round((completed / total) * 100) : 0
+
+  totalTasks.textContent = total.toString()
+  completedTasks.textContent = completed.toString()
+  progressBar.style.width = `${percentage}%`
+  progressText.textContent = `${percentage}%`
+
+  // Dynamic color based on progress
+  if (percentage < 50) {
+    progressBar.style.backgroundColor = '#dc3545' // red
+  } else if (percentage < 100) {
+    progressBar.style.backgroundColor = '#ffc107' // yellow
+  } else {
+    progressBar.style.backgroundColor = '#28a745' // green
+  }
+}
+
+// Handle background color change
+if (colorPicker) {
+  colorPicker.addEventListener('input', () => {
+    container.style.backgroundColor = colorPicker.value
+  })
+}
+
 // Initial render
 renderTodos()
-
