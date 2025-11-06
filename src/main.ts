@@ -16,6 +16,9 @@ const todoForm = document.querySelector('.todo-form') as HTMLFormElement
 const todoList = document.querySelector('.todo-list') as HTMLUListElement
 const totalCount = document.querySelector('#total-count') as HTMLElement
 const completedCount = document.querySelector('#completed-count') as HTMLElement
+const progressBar = document.querySelector('.progress-bar') as HTMLElement
+const progressPercentage = document.querySelector('#progress-percentage') as HTMLElement
+const bgPicker = document.querySelector('#background-color') as HTMLInputElement
 
 // Function to add a new todo
 const addTodo = (text: string, dueDate?: string): void => {
@@ -102,13 +105,40 @@ const removeTodo = (id: number): void => {
   renderTodos()
 }
 
-// Function to update the task counter
+// Function to update the task counter and progress bar
 const updateTaskCounter = (): void => {
   const total = todos.length
   const completed = todos.filter((todo) => todo.completed).length
 
   totalCount.textContent = total.toString()
   completedCount.textContent = completed.toString()
+
+  updateProgressBar(total, completed)
+}
+
+// Function to update progress bar width, label, and color
+const updateProgressBar = (total: number, completed: number): void => {
+  if (!progressBar || !progressPercentage) return
+
+  const percentage = total === 0 ? 0 : Math.round((completed / total) * 100)
+  progressBar.style.width = `${percentage}%`
+  progressPercentage.textContent = `${percentage}%`
+
+  // Change progress bar color dynamically
+  if (percentage < 30) {
+    progressBar.style.backgroundColor = '#dc3545' // red
+  } else if (percentage < 70) {
+    progressBar.style.backgroundColor = '#ffc107' // yellow
+  } else {
+    progressBar.style.backgroundColor = '#28a745' // green
+  }
+}
+
+// Background color picker functionality
+if (bgPicker) {
+  bgPicker.addEventListener('input', () => {
+    document.body.style.backgroundColor = bgPicker.value
+  })
 }
 
 // Initial render

@@ -12,7 +12,7 @@
       <div class="container">
         <h1>Todo App</h1>
 
-        <!-- Todo Input Form -->
+        <!--  Todo Input Form -->
         <form class="todo-form">
           <input
             type="text"
@@ -28,13 +28,30 @@
           <button type="submit">Add Todo</button>
         </form>
 
-        <!-- Todo List -->
+        <!--  Todo List -->
         <ul class="todo-list"></ul>
 
-        <!-- Task Counter -->
+        <!--  Progress Bar with Label and Percentage -->
+        <div class="progress-bar-wrapper">
+          <div class="progress-label">
+            <span>Progress:</span> <span id="progress-percentage">0%</span>
+          </div>
+          <div class="progress-bar-container">
+            <div class="progress-bar"></div>
+          </div>
+        </div>
+
+
+        <!--  Task Counter -->
         <div class="task-counter">
           <p>Total tasks: <span id="total-count">0</span></p>
           <p>Completed: <span id="completed-count">0</span></p>
+        </div>
+
+        <!--  Background Color Picker -->
+        <div class="color-picker">
+          <label for="background-color">Choose background color:</label>
+          <input type="color" id="background-color" />
         </div>
       </div>
     </div>
