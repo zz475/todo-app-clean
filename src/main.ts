@@ -4,20 +4,23 @@ interface Todo {
   id: number
   text: string
   completed: boolean
+  dueDate?: string
 }
 
 let todos: Todo[] = []
 
 const todoInput = document.querySelector('.todo-input') as HTMLInputElement
+const todoDate = document.querySelector('.todo-date') as HTMLInputElement
 const todoForm = document.querySelector('.todo-form') as HTMLFormElement
 const todoList = document.querySelector('.todo-list') as HTMLUListElement
 
 // Function to add a new todo
-const addTodo = (text: string): void => {
+const addTodo = (text: string, dueDate?: string): void => {
   const newTodo: Todo = {
     id: Date.now(),
     text,
-    completed: false
+    completed: false,
+    dueDate
   }
   todos.push(newTodo)
   renderTodos()
@@ -27,10 +30,12 @@ const addTodo = (text: string): void => {
 todoForm.addEventListener('submit', (event: Event): void => {
   event.preventDefault()
   const text = todoInput.value.trim()
+  const dueDate = todoDate.value
 
   if (text !== '') {
-    addTodo(text)
+    addTodo(text, dueDate)
     todoInput.value = ''
+    todoDate.value = ''
   }
 })
 
@@ -42,10 +47,31 @@ const renderTodos = (): void => {
     const li = document.createElement('li')
     li.className = 'todo-item'
 
+    // Determine color based on due date
+    let colorClass = ''
+    if (todo.dueDate) {
+      const today = new Date()
+      const due = new Date(todo.dueDate)
+      today.setHours(0, 0, 0, 0)
+      due.setHours(0, 0, 0, 0)
+
+      const diffDays = Math.floor((due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+
+      if (diffDays < 0) {
+        colorClass = 'overdue' // red
+      } else if (diffDays === 0) {
+        colorClass = 'today' // orange
+      } else if (diffDays === 1) {
+        colorClass = 'tomorrow' // green
+      } else {
+        colorClass = 'future' // optional (light green)
+      }
+    }
+
     li.innerHTML = `
       <input type="checkbox" ${todo.completed ? 'checked' : ''}>
-      <span style="text-decoration:${todo.completed ? 'line-through' : 'none'};">
-        ${todo.text}
+      <span class="todo-text ${colorClass}" style="text-decoration:${todo.completed ? 'line-through' : 'none'};">
+        ${todo.text} ${todo.dueDate ? `(Due: ${todo.dueDate})` : ''}
       </span>
       <button class="remove-btn">Remove</button>
     `
@@ -71,4 +97,5 @@ const removeTodo = (id: number): void => {
 
 // Initial render
 renderTodos()
+
 

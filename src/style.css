@@ -101,3 +101,65 @@ h1 {
 .todo-item button:hover {
   background: #c82333;
 }
+.container {
+  max-width: 500px;
+  margin: 100px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+/* Fix the form layout */
+.todo-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+/* Make inputs fit nicely inside the box */
+.todo-input,
+.todo-date {
+  width: 80%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* Button styling */
+button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #218838;
+}
+
+/* === Due date color coding === */
+.todo-text.overdue {
+  color: red;
+  font-weight: 600;
+}
+
+.todo-text.today {
+  color: orange;
+  font-weight: 600;
+}
+
+.todo-text.tomorrow {
+  color: green;
+  font-weight: 600;
+}
+
+.todo-text.future {
+  color: limegreen;
+  font-weight: 600;
+}
