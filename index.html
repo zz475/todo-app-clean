@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todo App</title>
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  </head>
+
+  <body>
+    <div id="app">
+      <div class="container">
+        <h1>Todo App</h1>
+
+        <!-- Todo Input Form -->
+        <form class="todo-form">
+          <input
+            type="text"
+            class="todo-input"
+            placeholder="Enter a new todo"
+            aria-label="Todo input field"
+          />
+          <button type="submit">Add Todo</button>
+        </form>
+
+        <!-- Todo List -->
+        <ul class="todo-list"></ul>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
